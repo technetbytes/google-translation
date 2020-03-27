@@ -24,7 +24,24 @@ def get_header():
 	else:
 		return "Error: No TXT field provided. Please specify an TXT."
 
-	return header	
+	return header
+
+@app.route('/api/v1/service/translate', methods=['GET'])
+def get_translate():
+	if 'txt' in request.args and 'src' in request.args and 'dest' in request.args:
+		urdu_text = request.args['txt']
+		src = request.args['src']
+		dest = request.args['dest']
+		translator = Translator()
+		result = translator.translate(urdu_text, src=src,dest=dest)
+		tokens = word_tokenize(result.text)
+		tokens_without_sw = [word for word in tokens if not word in stopwords.words()]
+		sw = [word for word in tokens_without_sw if word.isalnum()]
+		header = ("_").join(sw)
+	else:
+		return "Error: No TXT,SRC and DEST fields are provided. Please specify an TXT and other params."
+
+	return header
 
 
 
